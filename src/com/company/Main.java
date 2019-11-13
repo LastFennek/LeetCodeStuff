@@ -825,15 +825,26 @@ public class Main {
                 YKXTimes.add(new double[]{point[1],x[1],point[0],x[3]+1});
                 YKXTimes.remove(x);
             }
-            temp = new HashSet<>();
 
+            boolean test;
             for(Map.Entry<Integer, int[]> x : pointsUsed.entrySet()){
-                Double y = (double)(point[1]-x.getValue()[1])/(double)(point[0]-x.getValue()[0]);
-                if(y.isInfinite()){
-                    y = 0.0;
+                Double k = (double)(point[1]-x.getValue()[1])/(double)(point[0]-x.getValue()[0]);
+                if(k.isInfinite()){
+                    k = 0.0;
                 }
-                YKXTimes.add(new double[]{point[1],y,point[0],x.getValue()[2]+1});
+                test = true;
+                for(double[] z : temp){
+                    if(z[1] == k && k != 0){
+                        if(true){
+                            test = false;
+                        }
+                    }
+                }
+                if(test){
+                    YKXTimes.add(new double[]{point[1],k,point[0],x.getValue()[2]+1});
+                }
             }
+            temp = new HashSet<>();
 
             if(pointsUsed.containsKey(Arrays.hashCode(point))){
                 pointsUsed.get(Arrays.hashCode(point))[2]++;
@@ -845,9 +856,9 @@ public class Main {
 
 
         for(double[] x : YKXTimes){
-           if(x[3] > max){
+            if(x[3] > max){
                 max = (int) x[3];
-           }
+            }
         }
         return max;
     }
