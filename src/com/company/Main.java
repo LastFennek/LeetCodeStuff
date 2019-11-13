@@ -37,15 +37,6 @@ public class Main {
         //int[][] a = new int[][]{{1,1,0,1,1},{1,0,0,0,0},{0,0,0,0,1},{1,1,0,1,1}};
         //int[][] a = new int[][]{{1},{1},{1}};
         //int[][] a = new int[][]{{1}};
-        //int x = maxPoints(new int[][]{{0,0},{1,1},{2,2},{-2,2},{-1,1},{5,5},{6,6},{0,2},{1,4},{2,6},{3,8},{4,10},{5,12},{6,14}});
-        int x = maxPoints(new int[][]{{-54,-297},{-36,-222},{3,-2},{30,53},{-5,1},{-36,-222},{0,2},{1,3},{6,-47},{0,4},{2,3},{5,0},{48,128},{24,28},{0,-5},{48,128},{-12,-122},{-54,-297},{-42,-247},{-5,0},{2,4},{0,0},{54,153},{-30,-197},{4,5},{4,3},{-42,-247},{6,-47},{-60,-322},{-4,-2},{-18,-147},{6,-47},{60,178},{30,53},{-5,3},{-42,-247},{2,-2},{12,-22},{24,28},{0,-72},{3,-4},{-60,-322},{48,128},{0,-72},{-5,3},{5,5},{-24,-172},{-48,-272},{36,78},{-3,3}});
-        //int x = maxPoints(new int[][]{{4,30},{5,25},{6,20},{7,15}});
-        //int x = maxPoints(new int[][]{{0,1},{0,1},{0,1},{0,1},{0,2}});
-        //int x = maxPoints(new int[][]{{0,0},{0,0},{1,1},{1,1}});
-        //int x = maxPoints(new int[][]{{3,1},{12,3},{3,1},{-6,-1}});
-        //int x = maxPoints(new int[][]{{0,0},{1,1},{1,-1}});
-        //int x = maxPoints(new int[][]{{4,0},{4,-1},{4,5}});
-        //int x = maxPoints(new int[][]{{0,0},{1,65536},{65536,0}});
         //int[] a = new int[]{1,0,0,2,0,0,3};
         //int[] a = new int[]{0,0,0,0,0,0,0};
         //int[] a = new int[]{8,4,5,0,0,0,0,7};
@@ -59,7 +50,6 @@ public class Main {
             //}
             //System.out.println();
         //}
-        System.out.println(x);
         //System.out.println(maxAreaOfIsland(a));
 
 
@@ -816,32 +806,33 @@ public class Main {
         }else if(points.length == 1){
             return 1;
         }
-        HashSet<double[]> indexK = new HashSet<>();//value k index times
+
+        HashSet<double[]> YKXTimes = new HashSet<>();//y k x times
         HashMap<Integer,int[]> pointsUsed = new HashMap<>();
-        HashSet<double[]> fml = new HashSet<>();
+        HashSet<double[]> temp = new HashSet<>();
         int max = 0;
 
         for(int i = 0; i < points.length; i++){
 
             int[] point = points[i];
 
-            for(double[] x : indexK){
-                if(point[1] == ((point[0]-x[2])*x[1]+x[0]) || (point[0] == x[2] && x[1] == 0)){
-                    fml.add(x);
+            for(double[] x : YKXTimes){
+                if(Math.abs(point[1] - ((point[0]-x[2])*x[1]+x[0])) < 0.0000000001 || (point[0] == x[2] && x[1] == 0)){
+                    temp.add(x);
                 }
             }
-            for(double[] x : fml){
-                indexK.add(new double[]{point[1],x[1],point[0],x[3]+1});
-                indexK.remove(x);
+            for(double[] x : temp){
+                YKXTimes.add(new double[]{point[1],x[1],point[0],x[3]+1});
+                YKXTimes.remove(x);
             }
-            fml = new HashSet<>();
+            temp = new HashSet<>();
 
             for(Map.Entry<Integer, int[]> x : pointsUsed.entrySet()){
                 Double y = (double)(point[1]-x.getValue()[1])/(double)(point[0]-x.getValue()[0]);
                 if(y.isInfinite()){
                     y = 0.0;
                 }
-                indexK.add(new double[]{point[1],y,point[0],x.getValue()[2]+1});
+                YKXTimes.add(new double[]{point[1],y,point[0],x.getValue()[2]+1});
             }
 
             if(pointsUsed.containsKey(Arrays.hashCode(point))){
@@ -851,34 +842,13 @@ public class Main {
             }
         }
 
-        boolean fml2 = true;
-        double testing = 0;
-        double testing2 = 0;
-        int counter = 0;
-        for(double[] x : indexK){
-            if(x[3] > max){
+
+
+        for(double[] x : YKXTimes){
+           if(x[3] > max){
                 max = (int) x[3];
-            }
-            if ((int) x[3] == 24) {
-                System.out.println(x[1]);
-            }
-            if((int) x[3] == 6){
-                counter++;
-                testing = x[0];
-                if(counter == 1){
-                    testing2 = x[0];
-                }
-                if(testing != testing2){
-                    fml2 = false;
-                    System.out.println(x[1]+"wwwwwwwwwww"+x[3]);
-                }
-                testing2 = x[0];
-                System.out.println(x[0]);
-                System.out.println(x[1]);
-                System.out.println(x[2]);
-            }
+           }
         }
-        System.out.println(fml2);
         return max;
     }
 }
