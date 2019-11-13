@@ -37,7 +37,15 @@ public class Main {
         //int[][] a = new int[][]{{1,1,0,1,1},{1,0,0,0,0},{0,0,0,0,1},{1,1,0,1,1}};
         //int[][] a = new int[][]{{1},{1},{1}};
         //int[][] a = new int[][]{{1}};
-        int x = maxPoints(new int[][]{{0,0},{1,1},{2,2},{3,3},{4,4},{5,5},{6,6}});
+        //int x = maxPoints(new int[][]{{0,0},{1,1},{2,2},{-2,2},{-1,1},{5,5},{6,6},{0,2},{1,4},{2,6},{3,8},{4,10},{5,12},{6,14}});
+        int x = maxPoints(new int[][]{{-54,-297},{-36,-222},{3,-2},{30,53},{-5,1},{-36,-222},{0,2},{1,3},{6,-47},{0,4},{2,3},{5,0},{48,128},{24,28},{0,-5},{48,128},{-12,-122},{-54,-297},{-42,-247},{-5,0},{2,4},{0,0},{54,153},{-30,-197},{4,5},{4,3},{-42,-247},{6,-47},{-60,-322},{-4,-2},{-18,-147},{6,-47},{60,178},{30,53},{-5,3},{-42,-247},{2,-2},{12,-22},{24,28},{0,-72},{3,-4},{-60,-322},{48,128},{0,-72},{-5,3},{5,5},{-24,-172},{-48,-272},{36,78},{-3,3}});
+        //int x = maxPoints(new int[][]{{4,30},{5,25},{6,20},{7,15}});
+        //int x = maxPoints(new int[][]{{0,1},{0,1},{0,1},{0,1},{0,2}});
+        //int x = maxPoints(new int[][]{{0,0},{0,0},{1,1},{1,1}});
+        //int x = maxPoints(new int[][]{{3,1},{12,3},{3,1},{-6,-1}});
+        //int x = maxPoints(new int[][]{{0,0},{1,1},{1,-1}});
+        //int x = maxPoints(new int[][]{{4,0},{4,-1},{4,5}});
+        //int x = maxPoints(new int[][]{{0,0},{1,65536},{65536,0}});
         //int[] a = new int[]{1,0,0,2,0,0,3};
         //int[] a = new int[]{0,0,0,0,0,0,0};
         //int[] a = new int[]{8,4,5,0,0,0,0,7};
@@ -51,7 +59,7 @@ public class Main {
             //}
             //System.out.println();
         //}
-
+        System.out.println(x);
         //System.out.println(maxAreaOfIsland(a));
 
 
@@ -63,7 +71,6 @@ public class Main {
 
         return false;
     }
-
 
     public static void removeDuplicates(int[] nums,int k) {
 
@@ -733,14 +740,145 @@ public class Main {
         return summe;
     }
 
-    public static int maxPoints(int[][] points) {
-        int num;
-        HashMap<Integer, Integer> nums = new HashMap<>();
+    public static int maxPoints2(int[][] points) {
+        if(points.length == 0){
+            return 0;
+        }else if(points.length == 1){
+            return 1;
+        }
+        HashMap<String, Integer> yAtZero = new HashMap<>();
+        HashMap<Integer, Integer> inf = new HashMap<>();
 
-        for(int[] x : points){
+        for(int i = 0; i < points.length; i++){
+            for(int j = 0; j < points.length; j++){
+                if(i != j){
+                    int[] p1 = points[i];
+                    int[] p2 = points[j];
 
+
+                    double yZero;
+                    if(p1[1]-p2[1] != 0 && p1[0] != p2[0]){
+                        double k = (double)(p1[1]-p2[1])/(double)(p1[0]-p2[0]);
+                         yZero =  p1[1]-(p1[0]*k);
+                    }else if(p1[1]-p2[1] == 0 && p1[0] != p2[0]){
+                        yZero = p1[1];
+                    }else{
+                        if(inf.containsKey(p1[0])){
+                            inf.put(p1[0],inf.get(p1[0])+1);
+                        }else{
+                            inf.put(p1[0],1);
+                        }
+                        continue;
+                    }
+
+                    String num;
+                    if((p2[0] > p1[0] && p2[1] < p1[1]) || (p2[0] < p1[0] && p2[1] > p1[1])){
+                        num = "-"+String.valueOf(yZero+0.0000).substring(0,5);
+                    }else{
+                        num = String.valueOf(yZero+0.0000).substring(0,5);
+                    }
+
+                    /*
+                    if(i == 8 && j == 3){
+                        System.out.println("hi");
+                    }*/
+
+
+
+                    if(yAtZero.containsKey(num)){
+                        yAtZero.put(num,yAtZero.get(num)+1);
+                    }else{
+                        yAtZero.put(num,1);
+                    }
+                }
+            }
         }
 
-        return 0;
+        int max = 0;
+        for(Map.Entry<String,Integer> x: yAtZero.entrySet()){
+            if(x.getValue() > max){
+                max = x.getValue();
+            }
+        }
+
+        for(Map.Entry<Integer,Integer> x: inf.entrySet()){
+            if(x.getValue() > max){
+                max = x.getValue();
+            }
+        }
+
+        return (int) Math.sqrt(max+1)+1;
+    }
+
+    public static int maxPoints(int[][] points) {
+        if(points.length == 0){
+            return 0;
+        }else if(points.length == 1){
+            return 1;
+        }
+        HashSet<double[]> indexK = new HashSet<>();//value k index times
+        HashMap<Integer,int[]> pointsUsed = new HashMap<>();
+        HashSet<double[]> fml = new HashSet<>();
+        int max = 0;
+
+        for(int i = 0; i < points.length; i++){
+
+            int[] point = points[i];
+
+            for(double[] x : indexK){
+                if(point[1] == ((point[0]-x[2])*x[1]+x[0]) || (point[0] == x[2] && x[1] == 0)){
+                    fml.add(x);
+                }
+            }
+            for(double[] x : fml){
+                indexK.add(new double[]{point[1],x[1],point[0],x[3]+1});
+                indexK.remove(x);
+            }
+            fml = new HashSet<>();
+
+            for(Map.Entry<Integer, int[]> x : pointsUsed.entrySet()){
+                Double y = (double)(point[1]-x.getValue()[1])/(double)(point[0]-x.getValue()[0]);
+                if(y.isInfinite()){
+                    y = 0.0;
+                }
+                indexK.add(new double[]{point[1],y,point[0],x.getValue()[2]+1});
+            }
+
+            if(pointsUsed.containsKey(Arrays.hashCode(point))){
+                pointsUsed.get(Arrays.hashCode(point))[2]++;
+            }else{
+                pointsUsed.put(Arrays.hashCode(point),new int[]{point[0],point[1],1});
+            }
+        }
+
+        boolean fml2 = true;
+        double testing = 0;
+        double testing2 = 0;
+        int counter = 0;
+        for(double[] x : indexK){
+            if(x[3] > max){
+                max = (int) x[3];
+            }
+            if ((int) x[3] == 24) {
+                System.out.println(x[1]);
+            }
+            if((int) x[3] == 6){
+                counter++;
+                testing = x[0];
+                if(counter == 1){
+                    testing2 = x[0];
+                }
+                if(testing != testing2){
+                    fml2 = false;
+                    System.out.println(x[1]+"wwwwwwwwwww"+x[3]);
+                }
+                testing2 = x[0];
+                System.out.println(x[0]);
+                System.out.println(x[1]);
+                System.out.println(x[2]);
+            }
+        }
+        System.out.println(fml2);
+        return max;
     }
 }
