@@ -99,6 +99,7 @@ class Tests {
 
     @org.junit.jupiter.api.Test
     void maxPoints() {
+        Assertions.assertEquals(main.maxPoints(new int[][]{{-5, 1}, {-1, 10}, {0, 2},{1,20},{5, 3}}), 3);
         Assertions.assertEquals(main.maxPoints(new int[][]{{0,-1},{0,3},{0,-4},{0,-2},{0,-4},{0,0},{0,0},{0,1},{0,-2},{0,4}}), 10);
         Assertions.assertEquals(main.maxPoints(new int[][]{{-54,-297},{-36,-222},{30,53},{-36,-222},{6,-47},{48,128},{24,28},{48,128},{-12,-122}}), 9);
         Assertions.assertEquals(main.maxPoints(new int[][]{{0, 0}, {1, 1}, {2, 2}}), 3);

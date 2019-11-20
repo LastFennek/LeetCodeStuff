@@ -2,56 +2,28 @@ package com.company;
 
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 public class Main {
 
     public static void main(String[] args) {
-        //int[] x = new int[]{0,1,0,2,3,4,0,0,0,5,6,7,0,8,0};
-        //int[] x = new int[]{0};
-        //int[] t = new int[]{2,2};
-        //removeDuplicates(x,3);
-        //System.out.println(containsDuplicate(x,3,3));
-        //x = intersect(x,t);
 
-        //x = plusOne(x);
-        //moveZeroes(x);
-        //System.out.println(isValidSudoku(new char[][]{{'.','.','4','.','.','.','6','3','.'},{'.','.','.','.','.','.','.','.','.'},{'5','.','.','.','.','.','.','9','.'},{'.','.','.','5','6','.','.','.','.'},{'4','.','3','.','.','.','.','.','1'},{'.','.','.','7','.','.','.','.','.'},{'.','.','.','5','.','.','.','.','.'},{'.','.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.','.'}}));
-        //prime(10);
-      //  int[] x = (productExceptSelf(new int[]{1,2,3,4}));
-        //Random rand = new Random();
-        //for(int i = 0; i < 10; i++){
-          //  System.out.print(rand.nextInt(5)+",");
-        //}
-        //System.out.println();
-      //  System.out.println("hi");
-        //for (int y : x){
-          //  System.out.print(y+" | ");
-        //}
-        //int[] x = productExceptSelf3(new int[]{1,1,1,1,-1,1,5,1,-1,-1,-1,1,-1,1,-3,1,1,1,1,-1,1,-1,1,1,5,-1,1,-1,1,1,3,-1,-5,-1,1,-1,1,-1,-3,1,2,-1,1,-1,1,-1,1,1,1,1,1,-1,-1,-1,-3,-1,-1,4,-1,1,-1,1,-1,-1,-1,-1,3,1,4,-5,-1,1,1,1,1,1,-4,1,1,-3,-1,-1,1,3,-1,1,-2,1,-1,1,1,1,-1,1,1,1,-1});,1,1,1
-        //ArrayList x = (ArrayList) spiralOrder2(new int[][]{{1,2,3,4},{5,6,7,8},{9,10,11,12}});//,{13,14,15,16}});
-        //ArrayList x = (ArrayList) spiralOrder2(new int[][]{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}});
-        //ArrayList x = (ArrayList) spiralOrder2(new int[][]{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16},{17,18,19,20}});
-        //ArrayList x = (ArrayList) spiralOrder2(new int[][]{{1,2,3,4},{5,6,7,8},{9,10,11,12}});
-        //ArrayList x = (ArrayList) spiralOrder2(new int[][]{});
-        //int[][] y = generateMatrix(5);[]
-        //int[][] a = new int[][]{{1,1,0,1,1},{1,0,0,0,0},{0,0,0,0,1},{1,1,0,1,1}};
-        //int[][] a = new int[][]{{1},{1},{1}};
-        //int[][] a = new int[][]{{1}};
-        //int[] a = new int[]{1,0,0,2,0,0,3};
-        //int[] a = new int[]{0,0,0,0,0,0,0};
-        //int[] a = new int[]{8,4,5,0,0,0,0,7};
-        //int[] a = new int[]{1,2,0,3,4,0,5,6,0,7,0};
-        //int[] a = new int[]{0,1};
-        //duplicateZeros(a);
-        //ArrayList x = (ArrayList) spiralOrder2(new int[][]{{1,2,3},{4,5,6},{7,8,9}});
-        //for (int[] c : a){
-            //for(int i : c){
-            //    System.out.print(i +" ");
-            //}
-            //System.out.println();
-        //}
-        //System.out.println(maxAreaOfIsland(a));
+        Random rand = new Random();
 
+        for(int i = 0; i < rand.nextInt(10)+5; i++){
+            int sum = 0;
+            int counter = 0;
+            for(int j = 0; j < rand.nextInt(30)+5; j++){
+                sum += rand.nextInt(1000);
+                counter++;
+            }
+            System.out.println((double)sum/counter + "_" + (gettimes((double)sum/counter) == Integer.MAX_VALUE ? "0" : gettimes((double)sum/counter)));
+        }
+
+        System.out.println(gettimes(4.11111111111111111111111111));
+
+        splitArraySameAverage(new int[]{2,0,5,6,16,12,15,12,4,7,4,9,10,34,64,77,3,45,11,11});
 
     }
 
@@ -699,27 +671,33 @@ public class Main {
         }
     }
 
+    public static int[][] arr;
     public static int maxAreaOfIsland(int[][] grid) {
         int max = 0;
-
-        if(grid.length == 0){
-            return 0;
-        }
-
-        for(int i = 0; i < grid.length; i++){
-            for(int j = 0; j < grid[i].length; j++){
-                    if(i == 0){
-                        grid[i][j] += grid[i][j+1];
-                    }else{
-                        grid[i][j] += grid[i][j+1] + grid[i-1][j];
-                    }
-                    if(grid[i][j] > max){
-                        max = grid[i][j];
-                    }
+        arr = grid;
+        for(int i = 0; i < arr.length; i++){
+            for(int j = 0; j < arr[i].length; j++){
+                max = arr[i][j] == 0 ? max : Math.max(getNumberOfConnections(i,j),max);
             }
         }
-
         return max;
+    }
+
+    public static int getNumberOfConnections(int y, int x){
+        if(x < 0 || x > arr[0].length-1 || y > arr.length-1 || y < 0 ||  arr[y][x] == 0){
+            return 0;
+        }
+        arr[y][x] = 0;
+        return getNumberOfConnections(y-1,x) + getNumberOfConnections(y+1,x) + getNumberOfConnections(y,x-1) + getNumberOfConnections(y,x+1) + 1;
+    }
+
+    public static void printArray(int[][] arr){
+        for(int[] x : arr){
+            for(int y : x){
+                System.out.print(y+" ");
+            }
+            System.out.println();
+        }
     }
 
     public static int summeArray(int[] arr){
@@ -860,6 +838,170 @@ public class Main {
                 max = (int) x[3];
             }
         }
+
         return max;
     }
+
+
+    public static boolean parseBoolExpr(String expression) {
+        if(expression.charAt(0) == '&'){
+            return and(solver(expression));
+        }else if(expression.charAt(0) == '|'){
+            return or(solver(expression));
+        }else if(expression.charAt(0) == '!'){
+            return not(solver(expression));
+        }else if(expression.charAt(0) == 'f'){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public static boolean and (String[] expressions){
+        boolean ret = true;
+
+        for(int i = 0; i < expressions.length; i++){
+            if(expressions[i].charAt(0) == 'f'){
+                return false;
+            }else if(expressions[i].charAt(0) == 't'){
+                ret &= true;
+            }else if(expressions[i].charAt(0) == '!'){
+                ret &= not(solver(expressions[i]));
+            }else if(expressions[i].charAt(0) == '&'){
+                ret &= and(solver(expressions[i]));
+            }else{
+                ret &= or(solver(expressions[i]));
+            }
+        }
+        return ret;
+    }
+    public static boolean not (String[] expressions){
+        if(expressions[0].charAt(0) == 'f'){
+            return true;
+        }else if(expressions[0].charAt(0) == 't'){
+            return false;
+        }else if(expressions[0].charAt(0) == '!'){
+            return !not(solver(expressions[0]));
+        }else if(expressions[0].charAt(0) == '&'){
+            return !and(solver(expressions[0]));
+        }else{
+            return !or(solver(expressions[0]));
+        }
+    }
+    public static boolean or (String[] expressions){
+        boolean ret = false;
+        for(int i = 0; i < expressions.length; i++){
+            if(expressions[i].charAt(0) == 't'){
+                return true;
+            }else if(expressions[i].charAt(0) == 'f'){
+                ret |= false;
+            }else if(expressions[i].charAt(0) == '!'){
+                ret |= not(solver(expressions[i]));
+            }else if(expressions[i].charAt(0) == '|'){
+                ret |= or(solver(expressions[i]));
+            }else{
+                ret |= and(solver(expressions[i]));
+            }
+            if(ret){return true;}
+        }
+        return ret;
+    }
+    public static String[] solver(String exression){
+
+        char[] arr = exression.substring(2,exression.length()-1).toCharArray();
+        int klammern = 0;
+        List<String> list = new ArrayList<>();
+        StringBuilder toAdd = new StringBuilder();
+
+        for(char i : arr) {
+            if (i == '(') {
+                klammern++;
+            } else if (i == ')') {
+                klammern--;
+            }
+            if (i == ',' && klammern == 0) {
+                list.add(toAdd.toString());
+                toAdd = new StringBuilder();
+            } else {
+                toAdd.append(i);
+            }
+        }
+
+        list.add(toAdd.toString());
+        return list.toArray(new String[0]);
+    }
+    public static String test = "asdfa";
+    public static void test(){
+
+        test.indexOf("a");
+    }
+
+
+    public static int gettimes(double d){
+        d = d%1;
+        double times = 1;
+
+        while (d%1 > 0.00001){
+            d = d%1;
+            d = 1/d;
+            times *= d;
+        }
+        return (int)times;
+    }
+
+    public static int[] nums1;
+    public static HashMap<Integer, Integer> nums = new HashMap<>();
+    public static HashMap<Integer, Integer> finished = new HashMap<>();
+
+    public static Boolean splitArraySameAverage(int[] nums2){
+
+        nums1 = nums2;
+        if(nums1.length == 1){
+            return false;
+        }else if(nums1.length == 2){
+            return nums1[0] == nums1[1];
+        }
+
+
+        int sum = 0;
+        double avg;
+        int minnum;
+
+        for(int x : nums1){
+            sum += x;
+            if(nums.containsKey(x)){
+                nums.put(x,nums.get(x)+1);
+            }else{
+                nums.put(x,1);
+            }
+        }
+
+        avg = (double)sum/nums1.length;
+        minnum = gettimes(avg);
+
+        int maxnum = (nums1.length/2)-((nums1.length/2)%minnum);
+
+        if(minnum > nums1.length/2){
+            return false;
+        }
+
+        if(nums.containsKey(avg)){
+            return true;
+        }
+
+        Arrays.sort(nums1);
+
+        for(int i = minnum; i <= maxnum; i += minnum){
+            if(i == 1){
+                i++;
+            }
+
+
+        }
+
+
+        return false;
+    }
+
+
 }
