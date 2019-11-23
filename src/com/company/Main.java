@@ -2,28 +2,19 @@ package com.company;
 
 
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Random rand = new Random();
+        //Random rand = new Random();[][][]
+        //System.out.println(splitArraySameAverage(new int[]{2,12,18,16,19,3}));
+        System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,9}));
+        //System.out.println(splitArraySameAverage(new int[]{17,5,5,1,14,10,13,1,6}));
+        //System.out.println(splitArraySameAverage(new int[]{2,0,5,6,16,12,15,12,4}));
 
-        for(int i = 0; i < rand.nextInt(10)+5; i++){
-            int sum = 0;
-            int counter = 0;
-            for(int j = 0; j < rand.nextInt(30)+5; j++){
-                sum += rand.nextInt(1000);
-                counter++;
-            }
-            System.out.println((double)sum/counter + "_" + (gettimes((double)sum/counter) == Integer.MAX_VALUE ? "0" : gettimes((double)sum/counter)));
-        }
 
-        System.out.println(gettimes(4.11111111111111111111111111));
-
-        splitArraySameAverage(new int[]{2,0,5,6,16,12,15,12,4,7,4,9,10,34,64,77,3,45,11,11});
+        //System.out.println(checkPossibility(new int[]{1,2,3}));
 
     }
 
@@ -55,7 +46,7 @@ public class Main {
             if(index == k+times){
                 times++;
                 index = k+times;
-                tempNew = nums[0+times];
+                tempNew = nums[times];
             }
             counter++;
         }while(counter < nums.length);
@@ -161,7 +152,7 @@ public class Main {
                 counter++;
                 atm1++;
             }
-            if(!(atm1 >= nums1.length || atm2 >= nums2.length)){
+            if(!(atm1 >= nums1.length)){
                 if(nums1[atm1] >= nums2[atm2]){
                     atm2++;
                 }else{
@@ -182,7 +173,7 @@ public class Main {
     public static int[] plusOne(int[] digits) {
 
         Boolean nine = true;
-        int ret[];
+        int[] ret;
 
         if(digits[digits.length-1] == 9){
             for(int x : digits){
@@ -235,7 +226,7 @@ public class Main {
         int ts1 = (int) new Date().getTime();
 
         int maxZahl = n;
-        int sqrtZahl = (int)Math.sqrt((double)maxZahl);
+        int sqrtZahl = (int)Math.sqrt(maxZahl);
 
         BitSet Zahlen = new BitSet(maxZahl);
 
@@ -813,9 +804,7 @@ public class Main {
                 test = true;
                 for(double[] z : temp){
                     if(z[1] == k && k != 0){
-                        if(true){
-                            test = false;
-                        }
+                        test = false;
                     }
                 }
                 if(test){
@@ -850,11 +839,7 @@ public class Main {
             return or(solver(expression));
         }else if(expression.charAt(0) == '!'){
             return not(solver(expression));
-        }else if(expression.charAt(0) == 'f'){
-            return false;
-        }else{
-            return true;
-        }
+        }else return expression.charAt(0) != 'f';
     }
 
     public static boolean and (String[] expressions){
@@ -864,7 +849,6 @@ public class Main {
             if(expressions[i].charAt(0) == 'f'){
                 return false;
             }else if(expressions[i].charAt(0) == 't'){
-                ret &= true;
             }else if(expressions[i].charAt(0) == '!'){
                 ret &= not(solver(expressions[i]));
             }else if(expressions[i].charAt(0) == '&'){
@@ -894,7 +878,6 @@ public class Main {
             if(expressions[i].charAt(0) == 't'){
                 return true;
             }else if(expressions[i].charAt(0) == 'f'){
-                ret |= false;
             }else if(expressions[i].charAt(0) == '!'){
                 ret |= not(solver(expressions[i]));
             }else if(expressions[i].charAt(0) == '|'){
@@ -946,62 +929,104 @@ public class Main {
             d = 1/d;
             times *= d;
         }
+
         return (int)times;
     }
 
-    public static int[] nums1;
-    public static HashMap<Integer, Integer> nums = new HashMap<>();
-    public static HashMap<Integer, Integer> finished = new HashMap<>();
-
+    public static int[] nums;
+    public static HashMap<Integer, Integer> numsHM = new HashMap<>();
     public static Boolean splitArraySameAverage(int[] nums2){
 
-        nums1 = nums2;
-        if(nums1.length == 1){
-            return false;
-        }else if(nums1.length == 2){
-            return nums1[0] == nums1[1];
-        }
+        nums = nums2;
 
+        if (nums.length <= 1) return false;
+        if (nums.length == 2) return nums[0] == nums[1];
+
+        Arrays.sort(nums);
 
         int sum = 0;
-        double avg;
-        int minnum;
-
-        for(int x : nums1){
+        for(int x : nums){
             sum += x;
-            if(nums.containsKey(x)){
-                nums.put(x,nums.get(x)+1);
-            }else{
-                nums.put(x,1);
-            }
+            if(numsHM.containsKey(x)) numsHM.put(x,numsHM.get(x)+1);
+            else numsHM.put(1,x);
         }
 
-        avg = (double)sum/nums1.length;
-        minnum = gettimes(avg);
+        double avg = (double)sum/nums.length;
+        int minnum = gettimes(avg), maxnum = (nums.length/2)-((nums.length/2)%minnum);
 
-        int maxnum = (nums1.length/2)-((nums1.length/2)%minnum);
-
-        if(minnum > nums1.length/2){
-            return false;
-        }
-
-        if(nums.containsKey(avg)){
-            return true;
-        }
-
-        Arrays.sort(nums1);
+        if (minnum > maxnum) return false;
+        if (numsHM.containsKey(avg)) return true;
 
         for(int i = minnum; i <= maxnum; i += minnum){
-            if(i == 1){
-                i++;
-            }
+            if(i == 1) i++;
+            if(solveForNumber(i,0,nums.length-1, (int) (avg*i)))
+                return true;
+        }
+        return false;
+    }
 
+    public static boolean solveForNumber(int n, int start, int end, int sum){
+        /*if(n > end){
+            return false;
+        }
+        int maxsum = 0;
+        for(int i = n, x = 0; i > 0; i--, x++){
+            maxsum += nums[end-x];
+        }
+        if(maxsum > sum)
+            return false;*/
 
+        double avg = (double)sum/n;
+        int minnum = gettimes(avg), maxnum = (((end-start)+1)/2)-((((end-start)+1)/2)%minnum);
+        int minsum = 0;
+        if (minnum > maxnum) return false;
+
+        for(int i = start; i < n-1; i++){
+            if(i == end)
+                return false;
+            minsum += nums[i];
         }
 
 
+        while(end >= 0 && nums[end]+minsum > sum){
+            end--;
+        }
+        if(end < n-1){
+            return false;
+        }
+        if(nums[end]+minsum == sum){
+            return true;
+        }
+        for(int i = end; i > 1; i--){
+            if(solveForNumber(n-1, 0, i-1, sum-nums[i]))
+                return true;
+        }
         return false;
     }
 
 
+
+
+    public static boolean checkPossibility(int[] nums) {
+        if(nums.length <= 2){
+            return true;
+        }
+
+        int x = 1;
+        while(nums[x-1] <= nums[x] && x < nums.length-1){
+            x++;
+        }
+        if(x != nums.length-1 && x >= 2){
+            if(nums[x-1] > nums[x+1] && nums[x-2] > nums[x]){
+                return false;
+            }
+        }
+        x++;
+        for(int i = x;i < nums.length; i++){
+            if(nums[i-1] > nums[i]){
+                return false;
+            }
+        }
+        return true;
+    }
 }
