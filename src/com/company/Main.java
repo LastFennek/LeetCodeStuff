@@ -7,9 +7,14 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //Random rand = new Random();[][][]
+        //Random rand = new Random();[][][][][]
         //System.out.println(splitArraySameAverage(new int[]{2,12,18,16,19,3}));
-        System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,9}));
+        //System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,9}));
+        //System.out.println(splitArraySameAverage(new int[]{12,1,17,8,2}));
+        //System.out.println(splitArraySameAverage(new int[]{60,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30}));
+        System.out.println(splitArraySameAverage(new int[]{17,5,5,1,14,10,13,1,6}));
+        //Main mn = new Main();[]
+        //System.out.println(mn.splitArraySameAverage(new int[]{17,3,7,12,1}));
         //System.out.println(splitArraySameAverage(new int[]{17,5,5,1,14,10,13,1,6}));
         //System.out.println(splitArraySameAverage(new int[]{2,0,5,6,16,12,15,12,4}));
 
@@ -934,10 +939,9 @@ public class Main {
     }
 
     public static int[] nums;
-    public static HashMap<Integer, Integer> numsHM = new HashMap<>();
-    public static Boolean splitArraySameAverage(int[] nums2){
+    public static Boolean splitArraySameAverage(int[] A){
 
-        nums = nums2;
+        nums = A;
 
         if (nums.length <= 1) return false;
         if (nums.length == 2) return nums[0] == nums[1];
@@ -947,15 +951,13 @@ public class Main {
         int sum = 0;
         for(int x : nums){
             sum += x;
-            if(numsHM.containsKey(x)) numsHM.put(x,numsHM.get(x)+1);
-            else numsHM.put(1,x);
         }
 
         double avg = (double)sum/nums.length;
         int minnum = gettimes(avg), maxnum = (nums.length/2)-((nums.length/2)%minnum);
 
         if (minnum > maxnum) return false;
-        if (numsHM.containsKey(avg)) return true;
+        if (avg % 1 == 0.0 && Arrays.binarySearch(nums,(int)avg) > 0) return true;
 
         for(int i = minnum; i <= maxnum; i += minnum){
             if(i == 1) i++;
@@ -966,28 +968,13 @@ public class Main {
     }
 
     public static boolean solveForNumber(int n, int start, int end, int sum){
-        /*if(n > end){
-            return false;
-        }
-        int maxsum = 0;
-        for(int i = n, x = 0; i > 0; i--, x++){
-            maxsum += nums[end-x];
-        }
-        if(maxsum > sum)
-            return false;*/
-
-        double avg = (double)sum/n;
-        int minnum = gettimes(avg), maxnum = (((end-start)+1)/2)-((((end-start)+1)/2)%minnum);
         int minsum = 0;
-        if (minnum > maxnum) return false;
 
         for(int i = start; i < n-1; i++){
             if(i == end)
                 return false;
             minsum += nums[i];
         }
-
-
         while(end >= 0 && nums[end]+minsum > sum){
             end--;
         }
@@ -997,6 +984,11 @@ public class Main {
         if(nums[end]+minsum == sum){
             return true;
         }
+        int maxsum = 0;
+        for(int x = end; x > end - n; x--){
+            maxsum += nums[x];
+        }
+        if(maxsum < sum) return false;
         for(int i = end; i > 1; i--){
             if(solveForNumber(n-1, 0, i-1, sum-nums[i]))
                 return true;
