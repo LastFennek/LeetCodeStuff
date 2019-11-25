@@ -1,6 +1,7 @@
 package com.company;
 
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Main {
@@ -9,16 +10,33 @@ public class Main {
 
         //Random rand = new Random();[][][][][]
         //System.out.println(splitArraySameAverage(new int[]{2,12,18,16,19,3}));
+        //System.out.println(splitArraySameAverage(new int[]{5,3,11,19,2}));
+        //long time = System.nanoTime();
+        //System.out.println(splitArraySameAverage(new int[]{3,5,10,18}));
+
         //System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,9}));
         //System.out.println(splitArraySameAverage(new int[]{12,1,17,8,2}));
         //System.out.println(splitArraySameAverage(new int[]{60,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30}));
-        System.out.println(splitArraySameAverage(new int[]{17,5,5,1,14,10,13,1,6}));
-        //Main mn = new Main();[]
-        //System.out.println(mn.splitArraySameAverage(new int[]{17,3,7,12,1}));
-        //System.out.println(splitArraySameAverage(new int[]{17,5,5,1,14,10,13,1,6}));
+        //System.out.println(splitArraySameAverage(new int[]{1817,3082,8735,9101,2576,3473,9941,5336,8452,2584,2518,3196,1421,8460,6863,6956,3668,17}));
+        //System.out.println(splitArraySameAverage(new int[]{1,3,53,5,5,5,6,7,20,62,4,2,8,69,2,55,45,124,5,1,65,2,1,2,3,7,8,9,5,85,9,5,5,44,51,78}));
+        //System.out.println(splitArraySameAverage(new int[]{0,13,13,7,5,0,10,19,5}));
+        //int[] a = new int[]{1,2,3,4,4,6,7,8,9};
+        //int x = Arrays.binarySearch(a, 10);
+        //System.out.println(x);
+        //System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,3015}));
+        System.out.println(splitArraySameAverage(new int[]{4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 5}));
+        //System.out.println(splitArraySameAverage2(new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-29}));
+        //System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,8}));
+        //Main mn = new Main();[][]
+        //System.out.println(isPalindrome("OP"));
+        //System.out.println(splitArraySameAverage(new int[]{17,3,7,12,1}));
+        //System.out.println(splitArraySameAverage(new int[]{5,3,11,19,2}));
+        //System.out.println(splitArraySameAverage(new int[]{17,5,5,1,14,10,13,1,6}));[]
+        //System.out.println(splitArraySameAverage(new int[]{0,13,13,7,5,0,10,19,5}));
         //System.out.println(splitArraySameAverage(new int[]{2,0,5,6,16,12,15,12,4}));
+        //long time2 = System.nanoTime();
 
-
+        //System.out.println(((time2-time)/1000_000));
         //System.out.println(checkPossibility(new int[]{1,2,3}));
 
     }
@@ -918,7 +936,7 @@ public class Main {
         list.add(toAdd.toString());
         return list.toArray(new String[0]);
     }
-    public static String test = "asdfa";
+    public static String test = "OP";
     public static void test(){
 
         test.indexOf("a");
@@ -941,11 +959,11 @@ public class Main {
     public static int[] nums;
     public static Boolean splitArraySameAverage(int[] A){
 
+
+        if (A.length <= 1) return false;
+        if (A.length == 2) return A[0] == A[1];
+
         nums = A;
-
-        if (nums.length <= 1) return false;
-        if (nums.length == 2) return nums[0] == nums[1];
-
         Arrays.sort(nums);
 
         int sum = 0;
@@ -954,48 +972,82 @@ public class Main {
         }
 
         double avg = (double)sum/nums.length;
-        int minnum = gettimes(avg), maxnum = (nums.length/2)-((nums.length/2)%minnum);
+        int minnum = gettimes(avg);
 
-        if (minnum > maxnum) return false;
-        if (avg % 1 == 0.0 && Arrays.binarySearch(nums,(int)avg) > 0) return true;
-
-        for(int i = minnum; i <= maxnum; i += minnum){
-            if(i == 1) i++;
-            if(solveForNumber(i,0,nums.length-1, (int) (avg*i)))
-                return true;
+        for(int i = minnum; i <= (nums.length / 2)-((nums.length / 2)%minnum); i += minnum){
+            int minsum = 0;
+            for(int j = 0; j < i-1; j++) minsum += nums[j];
+            if(solveForNumber(i,nums.length-1, (int) (avg*i), minsum)) return true;
         }
         return false;
     }
 
-    public static boolean solveForNumber(int n, int start, int end, int sum){
-        int minsum = 0;
+    public static boolean solveForNumber(int n, int end, int sum, int minsum){
 
-        for(int i = start; i < n-1; i++){
-            if(i == end)
-                return false;
-            minsum += nums[i];
-        }
-        while(end >= 0 && nums[end]+minsum > sum){
-            end--;
-        }
-        if(end < n-1){
+        if(n == 1){
+            if(Arrays.binarySearch(nums,n-1,end+1,sum) >= 0)
+                return true;
             return false;
         }
-        if(nums[end]+minsum == sum){
-            return true;
-        }
+
+        end = binarySearch0(nums, n-1, end, sum-minsum)+1;
+
         int maxsum = 0;
-        for(int x = end; x > end - n; x--){
-            maxsum += nums[x];
+        for(int x = end; x > end - n; x--) maxsum += nums[x];
+
+        for(int i = end; i >= n; i--){
+            if(maxsum < sum-nums[i])
+                return false;
+            if(i == end || nums[i] != nums[i+1]){
+                if(solveForNumber(n-1,  i-1, sum-nums[i], minsum-nums[n-2]))
+                    return true;
+            }
+            maxsum = maxsum-nums[i]+nums[i-n];
         }
-        if(maxsum < sum) return false;
-        for(int i = end; i > 1; i--){
-            if(solveForNumber(n-1, 0, i-1, sum-nums[i]))
-                return true;
-        }
+
         return false;
     }
 
+    private static int binarySearch0(int[] a, int fromIndex, int toIndex, int key) {
+        int low = fromIndex;
+        int high = toIndex - 1;
+
+        while(low <= high) {
+            int mid = low + high >>> 1;
+            int midVal = a[mid];
+            if (midVal < key) {
+                low = mid + 1;
+            } else {
+                if (midVal <= key) {
+                    return mid;
+                }
+
+                high = mid - 1;
+            }
+        }
+
+        return low - 1;
+    }
+
+    public static boolean isPalindrome(String s) {
+        char[] cs = s.toLowerCase().toCharArray();
+        int leftAdd = 0;
+        int rightAdd = 0;
+
+        for(int i = 0; i+i+rightAdd+leftAdd < cs.length-1; i++){
+
+            while(i+leftAdd < cs.length && (cs[i+leftAdd] < 65 || cs[i+leftAdd] > 90) && (cs[i+leftAdd] < 97 || cs[i+leftAdd] > 122)){
+                leftAdd++;
+            }
+            while(i+rightAdd < cs.length && (cs[cs.length-(1+i+rightAdd)] < 65 || cs[cs.length-(1+i+rightAdd)] > 90) && (cs[cs.length-(1+i+rightAdd)] < 97 || cs[cs.length-(1+i+rightAdd)] > 122)){
+                rightAdd++;
+            }
+            if(i+rightAdd < cs.length && i+leftAdd < cs.length && cs[i+leftAdd] != cs[cs.length-(1+i+rightAdd)]){
+                return false;
+            }
+        }
+        return true;
+    }
 
 
 
