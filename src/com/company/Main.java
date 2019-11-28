@@ -24,7 +24,8 @@ public class Main {
         //int x = Arrays.binarySearch(a, 10);
         //System.out.println(x);
         //System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,3015}));
-        System.out.println(splitArraySameAverage(new int[]{4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 5}));
+        //System.out.println(splitArraySameAverage(new int[]{4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 5}));
+        merge(new int[]{1,2,3,0,0,0},3,new int[]{2,5,6},3);
         //System.out.println(splitArraySameAverage2(new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-29}));
         //System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,8}));
         //Main mn = new Main();[][]
@@ -1049,8 +1050,6 @@ public class Main {
         return true;
     }
 
-
-
     public static boolean checkPossibility(int[] nums) {
         if(nums.length <= 2){
             return true;
@@ -1073,4 +1072,19 @@ public class Main {
         }
         return true;
     }
+
+    public static void merge(int[] nums1, int m, int[] nums2, int n) {
+        m--;
+        n--;
+        for(int x = nums1.length-1; x >= 0; x--){
+            if(n < 0 || (m >= 0 && nums1[m] > nums2[n])){
+                nums1[x] = nums1[m];
+                m--;
+            }else{
+                nums1[x] = nums2[n];
+                n--;
+            }
+        }
+    }
+
 }
