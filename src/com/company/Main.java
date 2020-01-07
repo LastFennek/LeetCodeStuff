@@ -8,38 +8,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //Random rand = new Random();[][][][][]
-        //System.out.println(splitArraySameAverage(new int[]{2,12,18,16,19,3}));
-        //System.out.println(splitArraySameAverage(new int[]{5,3,11,19,2}));
-        //long time = System.nanoTime();
-        //System.out.println(splitArraySameAverage(new int[]{3,5,10,18}));
-
-        //System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,9}));
-        //System.out.println(splitArraySameAverage(new int[]{12,1,17,8,2}));
-        //System.out.println(splitArraySameAverage(new int[]{60,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30}));
-        //System.out.println(splitArraySameAverage(new int[]{1817,3082,8735,9101,2576,3473,9941,5336,8452,2584,2518,3196,1421,8460,6863,6956,3668,17}));
-        //System.out.println(splitArraySameAverage(new int[]{1,3,53,5,5,5,6,7,20,62,4,2,8,69,2,55,45,124,5,1,65,2,1,2,3,7,8,9,5,85,9,5,5,44,51,78}));
-        //System.out.println(splitArraySameAverage(new int[]{0,13,13,7,5,0,10,19,5}));
-        //int[] a = new int[]{1,2,3,4,4,6,7,8,9};
-        //int x = Arrays.binarySearch(a, 10);
-        //System.out.println(x);
-        //System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,3015}));
-        //System.out.println(splitArraySameAverage(new int[]{4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 5}));
-        merge(new int[]{1,2,3,0,0,0},3,new int[]{2,5,6},3);
-        //System.out.println(splitArraySameAverage2(new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-29}));
-        //System.out.println(splitArraySameAverage(new int[]{1,2,3,4,5,6,7,8}));
-        //Main mn = new Main();[][]
-        //System.out.println(isPalindrome("OP"));
-        //System.out.println(splitArraySameAverage(new int[]{17,3,7,12,1}));
-        //System.out.println(splitArraySameAverage(new int[]{5,3,11,19,2}));
-        //System.out.println(splitArraySameAverage(new int[]{17,5,5,1,14,10,13,1,6}));[]
-        //System.out.println(splitArraySameAverage(new int[]{0,13,13,7,5,0,10,19,5}));
-        //System.out.println(splitArraySameAverage(new int[]{2,0,5,6,16,12,15,12,4}));
-        //long time2 = System.nanoTime();
-
-        //System.out.println(((time2-time)/1000_000));
-        //System.out.println(checkPossibility(new int[]{1,2,3}));
-
+        //System.out.println(firstBadVersion(2126753390));
+        System.out.println(firstUniqChar("abcdeabcd"));
     }
 
 
@@ -1087,4 +1057,67 @@ public class Main {
         }
     }
 
+    public static int firstBadVersion(int n) {
+        int x = n/2;
+        int steps = 0;
+        while(true){
+            steps++;
+            if(isBadVersion(n)){
+                if(!isBadVersion(n-1)){
+                    break;
+                }
+                n -= x;
+            }else{
+                if(isBadVersion(n+1)){
+                    break;
+                }
+                n += x;
+            }
+            if(x > 1)
+                x >>>= 1;
+        }
+        System.out.println(steps);
+        if(!(isBadVersion(n-1) || !isBadVersion(n))){
+            return n;
+        }else{
+            return n+1;
+        }
+    }
+
+    public static boolean isBadVersion(int x){
+        return !(x<952);
+    }
+
+    public static int firstUniqChar(String s1) {
+
+
+        HashMap<Integer, Integer> hm = new HashMap<>();
+        BitSet bs = new BitSet();
+        BitSet rem = new BitSet();
+        char[] arr = s1.toCharArray();
+
+        for(int x = 0; x < arr.length; x++){
+            if(bs.get(arr[x])){
+                rem.set(arr[x]);
+            }else{
+                if(!hm.containsKey(arr[x])){
+                    hm.put((int)arr[x],x);
+                }
+                bs.set(arr[x]);
+            }
+        }
+        s1.lastIndexOf('c',4);
+        rem.xor(bs);
+        int lwst = Integer.MAX_VALUE;
+
+        for(int x = rem.nextSetBit(0); x > -1; x++){
+            if(hm.get(x) < lwst){
+                lwst = hm.get(x);
+            }
+
+            x = rem.nextSetBit(x+1);
+        }
+
+        return lwst == Integer.MAX_VALUE ? -1 : lwst;
+    }
 }
